@@ -3,18 +3,49 @@ class StringCalculator {
       if(!numbers) return 0;
       const validNumbers = this.extractNumbers(numbers);
       return validNumbers.reduce((sum, number) => sum + number, 0);
-      // return numbers.split(",").map(num=>parseInt(num,10) || 0).reduce((sum, number) => sum + number, 0);
     }
     extractNumbers(numbers) {
-      var extractedNumbers = numbers.match(/-?\d+/g)?.map(Number) || [];
-      extractedNumbers = extractedNumbers.filter(number => number <= 1000);
-      const negativeNumbers = extractedNumbers.filter(number => number < 0);
-      console.log(negativeNumbers)
-      if(negativeNumbers.length > 0) {
-        throw new Error(`negative numbers not allowed ${negativeNumbers.join(", ")}`);
+      let delimiterPattern = /,|\n/;
+    
+      if (numbers.startsWith("//")) {
+        const delimiterSection = numbers.match(/^\/\/(.*?)\n/)[1];
+        numbers = numbers.split("\n").slice(1).join("\n");
+        const customDelimiters = delimiterSection.match(/\[.*?\]/g);
+        if (customDelimiters) {
+          const escapedDelimiters = customDelimiters.map(d =>
+            d.slice(1, -1).replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
+          );
+          delimiterPattern = new RegExp(escapedDelimiters.join("|"), "g");
+        } else {
+          delimiterPattern = new RegExp(
+            delimiterSection.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "g"
+          );
+        }
       }
+    
+      console.log("🔹 Raw Input:", numbers);
+      console.log("🔹 Using Delimiter Pattern:", delimiterPattern);
+    
+      numbers = numbers.replace(/\n+/g, "\n");
+      const extractedNumbers = numbers.split(delimiterPattern).map(num => {
+        const parsedNum = Number(num.trim());
+        return isNaN(parsedNum) ? 0 : parsedNum;
+      }).filter(number => number<1001);
+    
+      console.log("🔹 Extracted Numbers:", extractedNumbers);
+    
+      const negatives = extractedNumbers.filter(num => num < 0);
+      console.log("🚨 Negatives Detected:", negatives);
+    
+      if (negatives.length > 0) {
+        const errorMessage = `negative numbers not allowed ${negatives.join(", ")}`;
+        console.log("❌ Throwing Error with Message:", errorMessage);
+        throw new Error(errorMessage);
+      }
+    
       return extractedNumbers;
-    }
+    }        
+    
   }
   
-  module.exports = StringCalculator;  
+  module.exports = StringCalculator;

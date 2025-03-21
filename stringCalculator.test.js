@@ -32,7 +32,7 @@ test("throws an error for negative numbers having new line character in input", 
 //Test Case 6 for positive number string with custom delimiter and new line characters
 test("returns the sum of multiple numbers with a custom delimiter and new line character", () => {
   const calculator = new StringCalculator();
-  expect(calculator.add("//;\n1;2;3;4;5;\n\n6\n7")).toBe(28);
+  expect(calculator.add("//;\n1;2;3;4;5;\n\n6;\n7")).toBe(28);
 });
 
 //Test Case 7 for postive and negative numbers with custom delimiter and new line characters
@@ -62,13 +62,13 @@ test("returns the sum of multiple numbers with a varying length custom delimiter
 //Test Case 11 for positive and negative numbers with new line and varying custom delimiters
 test("throws error when negatives present in string of multiple numbers with new line and multiple custom delimiters", () => {
   const calculator = new StringCalculator();
-  expect(calculator.add("//[*][%]\n1*-2%3%-4")).toThrow("negative numbers not allowed -2, -4");
+  expect(()=>calculator.add("//[*][%]\n1*-2%3%-4*-5")).toThrow("negative numbers not allowed -2, -4, -5");
 });
 
 //Test Case 12 for positive and negative numbers with new line, varying length and varying custom delimiters
 test("throws error when negatives present in string of multiple numbers with new line, varying length varying custom delimiters", () => {
   const calculator = new StringCalculator();
-  expect(calculator.add("//[*****][%%%]\n1*****-2%%%3%%%-4")).toThrow("negative numbers not allowed -2, -4");
+  expect(()=>calculator.add("//[*****][%%%]\n1*****-2%%%3%%%-4*****-5")).toThrow("negative numbers not allowed -2, -4, -5");
 });
 
 //Test Case 13 for ignoring numbers greater than 1000
