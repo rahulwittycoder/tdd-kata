@@ -1,6 +1,6 @@
 class StringCalculator {
     add(numbers) {
-      return 0;
+      return numbers.split(",").map(num=>parseInt(num,10) || 0).reduce((sum, number) => sum + number, 0);
     }
   }
   
